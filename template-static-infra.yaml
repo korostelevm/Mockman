@@ -6,7 +6,7 @@ Globals:
 Parameters:
   ServiceSubDomainName:
     Type: String
-    Default: 'mocker'
+    Default: 'mockman'
   RootUrl:
     Type: String
     Default: '{{resolve:ssm:/account/root-url:1}}'

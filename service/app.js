@@ -77,6 +77,29 @@ router.delete('/mock/:mockId', async (req, res) => {
   res.json(r)
 })
 
+
+router.get('/services', async (req, res) => {
+  var services = await models.services.get_services()
+  res.json(services)
+})
+
+router.get('/service/:serviceId', async (req, res) => { 
+  var s = await models.services.get_service(req.params.serviceId)
+  res.json(s)
+})
+
+router.put('/service', async (req, res) => {
+  var saved = await models.services.make_service(req.body)
+  res.json(saved)
+})
+
+router.delete('/service/:serviceId', async (req, res) => {
+  var r = await models.service.delete_service({
+    serviceId: req.params.serviceId
+  })
+  res.json(r)
+})
+
 router.get('/public/microfrontend.js*', async (req, res) => {
   var module_path = `${__dirname}/${req.path.slice(1)}`
   if(req.apiGateway){

@@ -21,6 +21,7 @@
         </a>
       </div>
       <NewMock/>
+      <NewService/>
     </div>
     <div class='col-md-9'>
       <Mock :service="selected_service"/>

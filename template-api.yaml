@@ -8,6 +8,7 @@ Globals:
     Tracing: Active
     Environment:
       Variables:
+        ServiceTable: !Join [ '', [ 'Service'] ]
         MockTable: !Join [ '', [ 'Mock'] ]
 
   Api:

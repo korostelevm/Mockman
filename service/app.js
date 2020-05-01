@@ -94,7 +94,7 @@ router.put('/service', async (req, res) => {
 })
 
 router.delete('/service/:serviceId', async (req, res) => {
-  var r = await models.service.delete_service({
+  var r = await models.services.delete_service({
     serviceId: req.params.serviceId
   })
   res.json(r)

@@ -51,14 +51,47 @@
        :title="path" >
           <div>
             <b-card no-body>
-              <b-tabs pills card vertical>
-                <b-tab v-for="(method,m) of Object.keys(service.spec.paths[path])" :key="m"
-                  :title="method.toUpperCase()" >
+              <b-tabs pills card >
+                <b-tab v-for="(method,m) in service.spec.paths[path]" :key="m"
+                  :title="m" >
                   <b-card-text>
-                    
-                    <p>{{service.spec.paths[path][method].requestBody}}</p>
-                    <p>{{service.spec.paths[path][method].summary}}</p>
-                    
+                    <h5>Summary</h5>
+                    <div class='ml-3'>
+                      <p>{{method.summary}}</p>
+                    </div>
+                    <div v-if="method.parameters">
+                      <h5>URL parmeters</h5>
+                      <div class='ml-3'>
+                        <p
+                        v-for="param of method.parameters" :key="param.name"
+                        ><b-badge>{{(param.schema && param.schema.type) ? param.schema.type : 'string'}}</b-badge> &nbsp;<strong>{{param.name}}</strong>
+                          &nbsp;{{param.description ? ': '+param.description : ''}}</p>
+                      </div>
+                    </div>
+                    <div v-if="method.requestBody && method.requestBody.content['application/json'] && method.requestBody.content['application/json'].schema">
+                      <h5>Request Body Schema &nbsp;<b-badge>{{ Object.keys(method.requestBody.content)[0] }}</b-badge> </h5>
+                      <div class='ml-3'>
+                        <h6><b-badge>{{method.requestBody.content['application/json'].schema.type}}</b-badge></h6>
+                        <div v-if="method.requestBody.content['application/json'].schema.type =='object' &&  method.requestBody.content['application/json'].schema.properties">
+                          <tree-view :data="method.requestBody.content['application/json'].schema.properties" :options="{maxDepth:1,  rootObjectKey: 'properties'}"></tree-view>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                    <div>
+                    <div class='float-right'><EditMock/></div>
+                    <h5>Mocks</h5>
+                    <p>
+                      Mocks are parameter sets for the api specs. <br>You can define request and response headers, parameters and body, 
+                    </p>
+                    </div>
+                    <b-tabs pills  vertical>
+                      <b-tab title='one'>asdfasf</b-tab>
+                      <b-tab title='two'>asdfasf</b-tab>
+                      <b-tab title='mikek'>asdfasf</b-tab>
+                      <!-- <b-tab v-for="(method,m) in service.spec.paths[path]" :key="m"></b-tab> -->
+                    </b-tabs>
+
                   </b-card-text>
                 </b-tab>
               </b-tabs>

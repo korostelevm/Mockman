@@ -4,6 +4,8 @@ import './components/_globals'
 import vueCustomElement from 'vue-custom-element'
 import { EventBus } from './EventBus.js';
 import { BootstrapVue } from 'bootstrap-vue'
+import TreeView from "vue-json-tree-view"
+Vue.use(TreeView)
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)

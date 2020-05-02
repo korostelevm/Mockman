@@ -1,42 +1,43 @@
 var faker = require('faker')
 var moment = require('moment')
 var _ = require('lodash')
+var slugify = require('slugify')
 const dynamoose = require('dynamoose');
 const Schema = dynamoose.Schema;
 dynamoose.AWS.config.update({
       region: 'us-east-1'
     });
+var models = require('../models/models')
 
 var schema = new Schema({
         "id": {
             type: String,
             hashKey: true
         },
-        "name": {
+        "serviceId": {
             type: String,
             index: {
                 global: true,
-                name: 'nameIndex',
+                name: 'serviceIdIndex',
                 project: true, // ProjectionType: ALL
                 throughput: 'ON_DEMAND'
             }
         },
-        spec_yaml:String,
-        // spec:Object,
+        name:String,
         description:String,
     },{ 
         saveUnknown: true,
         useDocumentTypes: true,
         timestamps: true,
+        throughput: 'ON_DEMAND',
         create:true, 
         update:true,
-        throughput: 'ON_DEMAND'
     })
-const Service = dynamoose.model('Service', schema)
+const Model = dynamoose.model('Route', schema)
     
-const index = function(){
+const index = function(serviceId){
     return new Promise( async (resolve, reject)=>{
-        Service.scan().exec()
+        Model.query({serviceId:serviceId}).using("serviceIdIndex").exec()
         .then(function(services) {
                 return resolve(services)
             }) 
@@ -45,50 +46,39 @@ const index = function(){
 
 const get = function(id){
     return new Promise( async (resolve, reject)=>{
-        Service.get(id)
+        Model.get(id)
         .then(function(m) {
-            console.log(m)
                 return resolve(m)
             })
     })
 }
     
-const update = function(service_definition){
+const create = function(route){
     return new Promise( async (resolve, reject)=>{
-        // var service = new Service(service_definition)
-        Service.update({id:service_definition.name},{
-            spec:service_definition.spec,
-            spec_yaml:service_definition.spec_yaml,
+        route.id = slugify(route.name,{
+            replacement: '-',
+            lower: false,
+            strict: false,
         })
-        .then(function(services) {
-                return resolve(services)
-            })
-    })
-}
-const create = function(service_definition){
-    return new Promise( async (resolve, reject)=>{
-        service_definition.id = service_definition.name
-        var service = new Service(service_definition)
-        service.save()
-        .then(function(services) {
-                return resolve(services)
-            })
+        route = new Model(route)
+        route.save()
+        .then(function(r) {
+            return resolve(r)
+        })
     })
 }
  
 const remove = function(id){
     return new Promise( async (resolve, reject)=>{
-        Service.delete(id)
+        Model.delete(id)
         .then(function(m) {
-            console.log(m)
+            // models.routes.remove()
                 return resolve(m)
         })
-        return resolve({'msg':"deleted"})
     })
 }
 
 module.exports = {
-    update,
     get,
     index,
     create,

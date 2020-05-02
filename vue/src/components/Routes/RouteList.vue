@@ -1,60 +1,58 @@
 <template>
-    <div class='main row m-2'>
-    <div class='mocks_menu col-md-1'>
-      <div class="list-group" v-if='services'>
+    <div class='main row'>
+    <div class='mocks_menu col-md-2'>
+      <div class="list-group" v-if='routes'>
          <a href="#" class="list-group-item list-group-item-action"
-            :class="{active: selected_service && s == selected_service}"
-            v-for="s of services" v-bind:key="s.id" 
-            v-on:click="select_service(s)">
+            :class="{active: selected_route && s == selected_route}"
+            v-for="s of routes" v-bind:key="s.id" 
+            v-on:click="select_route(s)">
           {{s.name}}
         </a>
       </div>
-      <ServiceModal
-        v-on:save="get_services"
-      />
     </div>
-    <div class='col'>
-      <Service v-if="selected_service" :serviceId="selected_service.id"
-      v-on:remove="function(){selected_service=null; get_services()}"
-      v-on:save="get_services"
-       />
+    <div class='col-md-9'>
+      <!-- <Route v-if="selected_route" :routeId="selected_route.routeId"
+      v-on:remove="function(){selected_route=null; get_routes()}"
+      v-on:save="get_routes"
+       /> -->
     </div>
     </div>
 </template>
 
 <script>
-import { EventBus } from '../../EventBus.js';
 export default {
-    name: 'ServiceList',
+    props:['serviceId'],
     data() {
       return {
         error: null,
         loading: null,
         timeout:null,
-        services: null,
-        selected_service: null,
+        routes: null,
+        selected_route: null,
       }
     },
     mounted: function() {
-      this.get_services()
+      this.load()
     },
     created: function() {
     },
+    // watch: {
+    //   key: function(){this.load()}
+    // },
     methods: {
-        select_service: function(service){
-          this.selected_service = null
-          this.$nextTick().then(()=>{
-            this.selected_service = service
-          })
+        select_route: function(route){
+          this.selected_route = route
+          console.log('route',route)
+          this.$emit('selected_route',route)
         },
-        get_services: function() {
+        load: function() {
             return new Promise((resolve,reject)=>{
               var self = this;
               this.timeout = setTimeout(()=>{ 
                 self.loading=null; self.error='Request timed out'}
                 , 20000);
             this.loading = 'loading'
-            fetch(this.$api + '/services', {
+            fetch(this.$api +'/service/'+this.serviceId + '/routes', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,7 +65,7 @@ export default {
                     clearTimeout(this.timeout)
                     this.loading = null;
                     console.log('mocks',data)
-                    this.services = data
+                    this.routes = data
                     resolve(data)
                 }).catch(e => {
                   this.error = e; console.error('exception:', e);

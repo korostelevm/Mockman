@@ -1,60 +1,54 @@
 <template>
-    <div class='main row m-2'>
-    <div class='mocks_menu col-md-1'>
-      <div class="list-group" v-if='services'>
+    <div class='main row'>
+    <div class='col'>
+      {{serviceId}}{{routeId}}
+      <div class="list-group" v-if='mocks'>
          <a href="#" class="list-group-item list-group-item-action"
-            :class="{active: selected_service && s == selected_service}"
-            v-for="s of services" v-bind:key="s.id" 
-            v-on:click="select_service(s)">
-          {{s.name}}
+            :class="{active: selected_mock && m == selected_mock}"
+            v-for="m of mocks" v-bind:key="m.id" 
+            v-on:click="select_mock(m)">
+          {{m.name}}
         </a>
       </div>
-      <ServiceModal
-        v-on:save="get_services"
-      />
-    </div>
-    <div class='col'>
-      <Service v-if="selected_service" :serviceId="selected_service.id"
-      v-on:remove="function(){selected_service=null; get_services()}"
-      v-on:save="get_services"
-       />
     </div>
     </div>
 </template>
 
 <script>
-import { EventBus } from '../../EventBus.js';
 export default {
-    name: 'ServiceList',
+    props:['serviceId','routeId'],
     data() {
       return {
         error: null,
         loading: null,
         timeout:null,
-        services: null,
-        selected_service: null,
+        mocks: null,
+        selected_mock: null,
       }
     },
     mounted: function() {
-      this.get_services()
+      this.load()
     },
     created: function() {
     },
+    watch: {
+      serviceId: function(){this.load()},
+      routeId: function(){this.load()}
+    },
     methods: {
-        select_service: function(service){
-          this.selected_service = null
-          this.$nextTick().then(()=>{
-            this.selected_service = service
-          })
+        select_mock: function(mock){
+          this.selected_mock = mock
+          console.log('mock',mock)
+          this.$emit('selected_mock',mock)
         },
-        get_services: function() {
+        load: function() {
             return new Promise((resolve,reject)=>{
               var self = this;
               this.timeout = setTimeout(()=>{ 
                 self.loading=null; self.error='Request timed out'}
                 , 20000);
             this.loading = 'loading'
-            fetch(this.$api + '/services', {
+            fetch(this.$api +'/service/'+this.serviceId + '/routes/'+this.routeId+'/mocks', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,7 +61,7 @@ export default {
                     clearTimeout(this.timeout)
                     this.loading = null;
                     console.log('mocks',data)
-                    this.services = data
+                    this.mocks = data
                     resolve(data)
                 }).catch(e => {
                   this.error = e; console.error('exception:', e);
@@ -79,15 +73,5 @@ export default {
 </script>
 
 <style scoped>
-.main{
-}
-.mocks_menu{
-}
-.menu_button{
-  cursor: pointer
-}
-.menu_button:hover{
-  background: yellow;
-}
 
 </style>

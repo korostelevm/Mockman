@@ -1,9 +1,9 @@
 <template>
-<div class="mt-4">
-<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#service_edit_modal">
-  New Service
+<div class='d-inline'>
+<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#mock_edit_modal">
+  New Mock
 </button>
-<div class="modal fade" id="service_edit_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+<div class="modal fade" id="mock_edit_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
 :class="{
   show: modal_open
 }"
@@ -11,34 +11,28 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create a Service</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Create a Mock</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-      <div class='mocks'>
-      <div v-if="service">
-
+      <div v-if="mock">
           <form>
             <div class="form-group">
-              <label for="service_name_input">Service Name</label>
-              <input type="text" class="form-control" id="service_name_input" placeholder="Name"
-                v-model="service.name"
+              <label for="mock_name_input">Mock Name</label>
+              <input type="text" class="form-control" id="mock_name_input" placeholder="Name"
+                v-model="mock.name"
               >
             </div>
             <div class="form-group">
-              <label for="service_desc_input">Describe the Service</label>
-              <textarea class="form-control" id="service_desc_input" rows="3"
-              v-model="service.description"
+              <label for="mock_desc_input">Describe the Mock</label>
+              <textarea class="form-control" id="mock_desc_input" rows="3"
+              v-model="mock.description"
               ></textarea>
             </div>
           </form>
       </div>
-    </div>
-      
-      
-      
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -53,13 +47,11 @@
 </template>
 
 <script>
-import { EventBus } from '../../EventBus.js';
 export default {
-    // props: ['service'],
-
+    props:['serviceId','routeId'],
     data() {
       return {
-        service:{},
+        mock:{},
         modal_open:false,
         url:null,
         error: null,
@@ -75,13 +67,13 @@ export default {
     methods: {
       save(){
         return new Promise((resolve,reject)=>{
-        fetch(this.$api + '/service', {
+        fetch(this.$api + '/service/'+this.serviceId+'/routes/'+this.routeId + '/mocks', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': this.get_auth_header()
                 },
-                body: JSON.stringify(this.service),
+                body: JSON.stringify(this.mock),
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -89,7 +81,7 @@ export default {
                     this.loading = null;
                     console.log(data)
                     this.$emit('save', data)
-                    $('#service_edit_modal').modal('hide')
+                    $('#mock_edit_modal').modal('hide')
                     resolve(data)
                 }).catch(e => {
                   this.error = e; console.error('exception:', e);
@@ -102,9 +94,6 @@ export default {
 
 <style scoped>
 .mocks{
-  margin:20px;
-}
-.routes{
   margin:20px;
 }
 .vue-codemirror {

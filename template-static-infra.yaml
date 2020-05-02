@@ -24,63 +24,63 @@ Parameters:
     Default: ''
 Resources:
 
-  MockTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-        - AttributeName: "mockId"
-          AttributeType: "S"
-        - 
-          AttributeName: Service
-          AttributeType: S
-        KeySchema:
-        - AttributeName: "mockId"
-          KeyType: "HASH"
-        GlobalSecondaryIndexes:
-          -
-            IndexName: ServiceIndex
-            KeySchema:
-              - 
-                  AttributeName: Service
-                  KeyType: HASH
-              - 
-                  AttributeName: mockId
-                  KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-        SSESpecification:
-          SSEEnabled: True
-        TableName: !Join [ '', [ 'Mock'] ]
+  # MockTable:
+  #     Type: AWS::DynamoDB::Table
+  #     Properties:
+  #       BillingMode: PAY_PER_REQUEST
+  #       AttributeDefinitions:
+  #       - AttributeName: "mockId"
+  #         AttributeType: "S"
+  #       - 
+  #         AttributeName: Service
+  #         AttributeType: S
+  #       KeySchema:
+  #       - AttributeName: "mockId"
+  #         KeyType: "HASH"
+  #       GlobalSecondaryIndexes:
+  #         -
+  #           IndexName: ServiceIndex
+  #           KeySchema:
+  #             - 
+  #                 AttributeName: Service
+  #                 KeyType: HASH
+  #             - 
+  #                 AttributeName: mockId
+  #                 KeyType: RANGE
+  #           Projection:
+  #             ProjectionType: ALL
+  #       SSESpecification:
+  #         SSEEnabled: True
+  #       TableName: !Join [ '', [ 'Mock'] ]
   
-  ServicesTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-        - AttributeName: "serviceId"
-          AttributeType: "S"
-        - 
-          AttributeName: Service
-          AttributeType: S
-        KeySchema:
-        - AttributeName: "serviceId"
-          KeyType: "HASH"
-        GlobalSecondaryIndexes:
-          -
-            IndexName: ServiceIndex
-            KeySchema:
-              - 
-                  AttributeName: Service
-                  KeyType: HASH
-              - 
-                  AttributeName: serviceId
-                  KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-        SSESpecification:
-          SSEEnabled: True
-        TableName: !Join [ '', [ 'Service'] ]
+  # ServicesTable:
+  #     Type: AWS::DynamoDB::Table
+  #     Properties:
+  #       BillingMode: PAY_PER_REQUEST
+  #       AttributeDefinitions:
+  #       - AttributeName: "serviceId"
+  #         AttributeType: "S"
+  #       - 
+  #         AttributeName: Service
+  #         AttributeType: S
+  #       KeySchema:
+  #       - AttributeName: "serviceId"
+  #         KeyType: "HASH"
+  #       GlobalSecondaryIndexes:
+  #         -
+  #           IndexName: ServiceIndex
+  #           KeySchema:
+  #             - 
+  #                 AttributeName: Service
+  #                 KeyType: HASH
+  #             - 
+  #                 AttributeName: serviceId
+  #                 KeyType: RANGE
+  #           Projection:
+  #             ProjectionType: ALL
+  #       SSESpecification:
+  #         SSEEnabled: True
+  #       TableName: !Join [ '', [ 'Service'] ]
 
   APIDomainName:
     Type: 'AWS::ApiGateway::DomainName'

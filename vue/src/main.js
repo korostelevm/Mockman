@@ -3,7 +3,11 @@ import App from './App.vue'
 import './components/_globals'
 import vueCustomElement from 'vue-custom-element'
 import { EventBus } from './EventBus.js';
+import { BootstrapVue } from 'bootstrap-vue'
 
+// Install BootstrapVue
+Vue.use(BootstrapVue)
+var _ = require('lodash')
 
 Vue.use(vueCustomElement);
 

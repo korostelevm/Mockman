@@ -1,7 +1,7 @@
 <template>
-<div class="mt-4">
+<div class="mb-4">
 <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#service_edit_modal">
-  New Service
+  New App
 </button>
 <div class="modal fade" id="service_edit_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
 :class="{
@@ -11,7 +11,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create a Service</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Create an App</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -22,13 +22,13 @@
 
           <form>
             <div class="form-group">
-              <label for="service_name_input">Service Name</label>
+              <label for="service_name_input">App Name</label>
               <input type="text" class="form-control" id="service_name_input" placeholder="Name"
                 v-model="service.name"
               >
             </div>
             <div class="form-group">
-              <label for="service_desc_input">Describe the Service</label>
+              <label for="service_desc_input">Describe the App</label>
               <textarea class="form-control" id="service_desc_input" rows="3"
               v-model="service.description"
               ></textarea>

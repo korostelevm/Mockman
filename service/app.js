@@ -107,6 +107,16 @@ router.delete('/service/:serviceId', async (req, res) => {
   res.json(r)
 }) 
 
+// mocks
+router.get('/service/:serviceId/mocks', async (req, res) => {
+  var saved = await models.mocks.create(req.params.serviceId)
+  res.json(saved)
+})
+router.put('/mock', async (req, res) => {
+  var saved = await models.mocks.create(req.body)
+  res.json(saved)
+})
+
 // // routes
 
 // router.get('/service/:serviceId/routes', async (req, res) => { 

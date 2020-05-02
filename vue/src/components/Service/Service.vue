@@ -17,7 +17,7 @@
         ><i class='fa fa-check'></i> Save</button>
         <button class="btn btn-danger btn-sm" type="button"
         v-on:click="remove"
-        ><i class='fa fa-trash'></i> Delete Service</button>
+        ><i class='fa fa-trash'></i> Delete App</button>
       </div>
     </div>
   </div>
@@ -78,19 +78,11 @@
                       </div>
                     </div>
                     <hr>
-                    <div>
-                    <div class='float-right'><EditMock/></div>
-                    <h5>Mocks</h5>
-                    <p>
-                      Mocks are parameter sets for the api specs. <br>You can define request and response headers, parameters and body, 
-                    </p>
-                    </div>
-                    <b-tabs pills  vertical>
-                      <b-tab title='one'>asdfasf</b-tab>
-                      <b-tab title='two'>asdfasf</b-tab>
-                      <b-tab title='mikek'>asdfasf</b-tab>
-                      <!-- <b-tab v-for="(method,m) in service.spec.paths[path]" :key="m"></b-tab> -->
-                    </b-tabs>
+                    <Mocks
+                        :service="service"
+                        :path="path"
+                        :method="{method:m, ...method}"
+                    />
 
                   </b-card-text>
                 </b-tab>
@@ -180,7 +172,7 @@ export default {
         route_list_key:0,
         selected_route:null,
         cmOptions: {
-                tabSize: 4,
+            tabSize: 2,
             styleActiveLine: true,
             lineNumbers: true,
             mode: 'text/x-yaml',

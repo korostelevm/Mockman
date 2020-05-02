@@ -1,6 +1,10 @@
 <template>
     <div class='main row m-2'>
     <div class='mocks_menu col-md-1'>
+      <ServiceModal
+        v-on:save="get_services"
+      />
+      Apps:
       <div class="list-group" v-if='services'>
          <a href="#" class="list-group-item list-group-item-action"
             :class="{active: selected_service && s == selected_service}"
@@ -9,9 +13,6 @@
           {{s.name}}
         </a>
       </div>
-      <ServiceModal
-        v-on:save="get_services"
-      />
     </div>
     <div class='col'>
       <Service v-if="selected_service" :serviceId="selected_service.id"

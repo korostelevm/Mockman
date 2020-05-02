@@ -18,17 +18,14 @@ var schema = new Schema({
             type: String,
             index: {
                 global: true,
+                rangeKey:'path',
                 name: 'serviceIdIndex',
                 project: true, // ProjectionType: ALL
                 throughput: 'ON_DEMAND'
             }
-        },
-
-        routeId:String,
-        requestHeaders:String,
-        requestBody:String,
-        responseHeaders:String,
-        responseBody:String,
+        }, 
+        method:String,
+        path:String,
     },{
         saveUnknown: true,
         useDocumentTypes: true,
@@ -72,37 +69,44 @@ const get = function(mockId){
 const create = function(m){
     console.log(m)
     return new Promise( async (resolve, reject)=>{
-        var id = sha1(slugify(JSON.stringify(m.mock)))
-        var mock = new Model({
-            id,
-            serviceId: m.serviceId,
-            routeId: m.routeId,
+        var mock = {
+            id: [m.service.id, m.mock.name].map((d)=>{return slugify(d)}).join('/') + m.path +'['+m.method.method +']',
+            serviceId: m.service.id,
+            method: m.method.method,
             ...m.mock
-            // mockId: '/recall',
-            // Service: 'RememberWorkPattern',
-            // method: 'POST',
-            // requestHeaders: {
-            //     'Authorization':'test',
-            //     'Content-Type':'application/json'
-            // },   
-            // requestBody: JSON.stringify({
-            //     '_datapoint':'datapointName'
-            // }),
-            // responseHeaders: { 
-            //     'Content-Type':'application/json' 
-            // },
-            // responseBody: JSON.stringify({
-            //     'status':'saved' 
-            })
+        }
+        mock = new Model(mock)
+        
+        // var mock = new Model({
+        //     id,
+        //     serviceId: m.serviceId,
+        //     routeId: m.routeId,
+        //     ...m.mock
+        //     // mockId: '/recall',
+        //     // Service: 'RememberWorkPattern',
+        //     // method: 'POST',
+        //     // requestHeaders: {
+        //     //     'Authorization':'test',
+        //     //     'Content-Type':'application/json'
+        //     // },   
+        //     // requestBody: JSON.stringify({
+        //     //     '_datapoint':'datapointName'
+        //     // }),
+        //     // responseHeaders: { 
+        //     //     'Content-Type':'application/json' 
+        //     // },
+        //     // responseBody: JSON.stringify({
+        //     //     'status':'saved' 
+        //     })
             
-        // })
-        // mock_definition.mockId = [mock_definition.Service, mock_definition.path].join('')
-        // mock_definition = _.mapValues(mock_definition, (v)=>{
-        //     if(typeof(v)=='object'){return JSON.stringify(v)}
-        //     return v
-        //   })
-        //   var mock = new Model(mock_definition)
-        console.log(mock)
+        // // })
+        // // mock_definition.mockId = [mock_definition.Service, mock_definition.path].join('')
+        // // mock_definition = _.mapValues(mock_definition, (v)=>{
+        // //     if(typeof(v)=='object'){return JSON.stringify(v)}
+        // //     return v
+        // //   })
+        // //   var mock = new Model(mock_definition)
+        // console.log(mock)
 
         mock.save()
         .then(function(mocks) {

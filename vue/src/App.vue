@@ -3,8 +3,8 @@
   <div>
     <nav class="navbar navbar-light bg-light mb-3">
       <a class="navbar-brand" href="#">
-        <i class="fa fa-bath" aria-hidden="true"></i>
-        Make Mocks
+        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+        Snowman
       </a>
     </nav>
       <div class='row'>

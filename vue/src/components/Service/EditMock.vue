@@ -1,5 +1,17 @@
 <template>
 <div>
+    <h5>Endpoint</h5>
+    <b-alert variant="success" show>
+      &nbsp; {{$api}}/server/{{mock.serviceId}}/{{encodeURIComponent(mock.name)}}{{mock.path}}{{mock.url_params}}
+    </b-alert>
+    <hr>
+    <div class='float-right'>
+      <b-button size="sm" 
+      variant="success"
+      >
+        Save Mock</b-button>
+    </div>
+
     <h5>Request</h5>
     <div class="row">
         <div class="col-md-6">
@@ -7,11 +19,11 @@
             <codemirror
             :value="mock.request_params"
             :options="cmOptions"
-            @input="function(c){mock.request_params = c}"
+            @input="input_request_params"
             />
         </div>
         <div class="col-md-6">
-            Response Headers
+            Request Headers
             <codemirror
             :value="mock.request_headers"
             :options="cmOptions"
@@ -65,11 +77,37 @@ import 'codemirror/mode/yaml/yaml'
 import 'codemirror/theme/monokai.css'
 
 export default {
-    props:['path','method'],
+    props:['path','method','service','method',"_mock"],
     data() {
+      var mock = _.clone(this._mock)
+      if(this.method.parameters){
+        var req_params = _.groupBy(this.method.parameters, 'name')
+        var req_params = _.mapValues(req_params,(v)=>{
+          try{
+            return v[0].schema.type
+          }catch(e){
+            return 'string'
+          }
+        })
+        if(!mock.query){
+          mock.request_params = JSON.stringify(req_params,null,2)
+          mock.query = req_params
+        }
+        mock.url_params ='?'+ Object.keys(mock.query)
+          .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(mock.query[k]))
+          .join('&')
+        
+      }
+
+      if(!mock.request_headers){
+        mock.request_headers = JSON.stringify({
+          "Content-Type":"application/json"
+        },null,2)
+      }
+      
       return {
+        mock:mock,
         loading: null,
-        mock:{},
         cmOptions: {
             tabSize: 2,
             styleActiveLine: true,
@@ -79,15 +117,30 @@ export default {
         }
       }
     },
+    watch:{
+      'mock.request_params':function(c){
+        console.log(c)
+      }
+    },
     components:{
       codemirror
     },
     mounted: function() {
+     
     },
     created: function() {
     },
     methods: {
+      input_request_params(c){
+        this.mock.request_params = c
+        this.mock.query = JSON.parse(c)
+        var url_params = '?'+Object.keys(this.mock.query)
+          .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(this.mock.query[k]))
+          .join('&')
+        Vue.set(this.mock,'url_params',url_params,true)
+        console.log(url_params)
       }
+    }
   }
 </script>
 

@@ -15,10 +15,22 @@
                       Mocks are parameter sets for the api specs. <br>You can define request and response headers, parameters and body, 
                     </p>
                     </div>
-                    <b-tabs pills  vertical>
+                    <b-tabs  card  >
                       <b-tab v-for="m in mocks" :key="m.id"
                       :title='m.name'>
-                      {{m.name}}
+                        <p>{{m.description}}</p>
+                        <b-alert variant="success" show>
+                            Mock Url: &nbsp; <span>{{$api}}/server/{{m.serviceId}}/{{encodeURIComponent(m.name)}}</span>{{m.path}}
+                        </b-alert>
+
+                          
+                        <EditMock
+                          :mock="m"
+                          :service="service"
+                          :path="path"
+                          :method="method"
+                          v-on:save="load"
+                        />
                       </b-tab>
                     </b-tabs>
 </div>

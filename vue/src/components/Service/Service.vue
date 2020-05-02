@@ -28,7 +28,7 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-5 yaml_editor">
   <h4>Api Spec</h4>
   <codemirror
       :value="service.spec_yaml"
@@ -283,7 +283,7 @@ export default {
 </script>
 
 <style>
-.CodeMirror {
+.yaml_editor .CodeMirror {
   border: 1px solid #eee;
   /* height: auto; */
   overflow-y: hidden;

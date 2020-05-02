@@ -1,23 +1,57 @@
 <template>
 <div>
-    <b-button size="sm" v-b-modal="'new_mock_' + path">Create a mock</b-button>
-    <b-modal hide-backdrop
-     content-class="shadow"
-    :id="'new_mock_' + path" title="Create a Mock">
-        <div class="row">
-            <div class="col-md-5">
-                <h4>Request Headers</h4>
-                <codemirror
-                :value="mock"
-                :options="cmOptions"
-                @input="function(c){mock.request_headers = c}"
-                />
-            </div>
-            <div class="col-md-5">
-            </div>
+    <h5>Request</h5>
+    <div class="row">
+        <div class="col-md-6">
+            Request Parameters
+            <codemirror
+            :value="mock.request_params"
+            :options="cmOptions"
+            @input="function(c){mock.request_params = c}"
+            />
         </div>
-
-    </b-modal>
+        <div class="col-md-6">
+            Response Headers
+            <codemirror
+            :value="mock.request_headers"
+            :options="cmOptions"
+            @input="function(c){mock.request_headers = c}"
+            />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            Request Body
+            <codemirror
+            :value="mock.request_body"
+            :options="cmOptions"
+            @input="function(c){mock.request_body = c}"
+            />
+        </div>
+    </div>
+  <hr>
+    <h5>Response</h5>
+    <div class="row mt-3">
+        <div class="col">
+            Response Headers
+            <codemirror
+            :value="mock.response_headers"
+            :options="cmOptions"
+            @input="function(c){mock.response_headers = c}"
+            />
+        </div>
+    </div>
+    
+    <div class="row mt-3">  
+        <div class="col">
+            Response Body
+            <codemirror
+            :value="mock.response_body"
+            :options="cmOptions"
+            @input="function(c){mock.response_body = c}"
+            />
+        </div>
+    </div>
 </div>
 </template>
 

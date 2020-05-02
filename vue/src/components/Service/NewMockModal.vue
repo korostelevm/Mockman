@@ -1,12 +1,12 @@
 <template>
 <div>
-    <b-button size="sm" v-b-modal="'new_mock_' + path">Create a mock</b-button>
+    <b-button size="sm" v-b-modal="'new_mock_' + path+method.method">Create a mock</b-button>
     <b-modal 
     @ok="save"
     hide-backdrop 
     ok-title="Save"
      content-class="shadow"
-    :id="'new_mock_' + path" title="Create a Mock">
+    :id="'new_mock_' + path+method.method" title="Create a Mock">
           <b-form>
             <b-form-group label="Mock Name:" label-for="mock_name">
               <b-form-input
@@ -65,7 +65,7 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     this.$emit('save', data)
-                    this.$bvModal.hide('new_mock_' + this.path)
+                    this.$bvModal.hide('new_mock_' + this.path+this.method.method)
                     resolve(data)
                 }).catch(e => {
                   this.error = e; console.error('exception:', e);

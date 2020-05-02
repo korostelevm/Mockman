@@ -67,7 +67,6 @@ export default {
                 .then(data => {
                     clearTimeout(this.timeout)
                     this.loading = null;
-                    console.log('mocks',data)
                     this.services = data
                     resolve(data)
                 }).catch(e => {

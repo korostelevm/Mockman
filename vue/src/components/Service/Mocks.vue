@@ -6,6 +6,7 @@
                         :service="service"
                         :path="path"
                         :method="method"
+                        v-on:save="load"
                       />
                     </div>
                     <h5>Mocks</h5>
@@ -15,8 +16,10 @@
                     </p>
                     </div>
                     <b-tabs pills  vertical>
-                      <b-tab title='mikek'>asdfasf</b-tab>
-                      <!-- <b-tab v-for="(method,m) in service.spec.paths[path]" :key="m"></b-tab> -->
+                      <b-tab v-for="m in mocks" :key="m.id"
+                      :title='m.name'>
+                      {{m.name}}
+                      </b-tab>
                     </b-tabs>
 </div>
 </template>
@@ -28,13 +31,40 @@ export default {
     data() {
       return {
         loading: null,
+        mocks:[]
       }
     },
     mounted: function() {
+      this.load();
     },
     created: function() {
     },
     methods: {
+      load(){
+        return new Promise((resolve,reject)=>{
+          this.loading = true;
+          fetch(this.$api + '/service/'+this.service.id+'/mocks'+
+                '?path=' + encodeURIComponent(this.path)+
+                '&method=' + encodeURIComponent(this.method.method)
+                , {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': this.get_auth_header()
+                },
+                // body: JSON.stringify(this.service),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.loading = null;
+                    console.log(data)
+                    this.mocks = data;
+                    resolve(data)
+                }).catch(e => {
+                  this.error = e; console.error('exception:', e);
+                })
+          })
+        }
       }
   }
 </script>

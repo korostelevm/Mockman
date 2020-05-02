@@ -36,12 +36,15 @@ var schema = new Schema({
     })
 const Model = dynamoose.model('Mock', schema)
     
-const index = function(serviceId, routeId){
-    logger.log(serviceId,routeId)
+const index = function(serviceId, path, method){
+    logger.log(serviceId)
+    logger.log(serviceId)
+    logger.log(serviceId)
+    logger.log(serviceId, path,method)
     return new Promise( async (resolve, reject)=>{
         Model.query('serviceId').eq(serviceId)
-        .filter("routeId").eq(routeId)
-        // .using('serviceIdIndex')
+        .and().where('path').eq(path)
+        .filter("method").eq(method)
         .exec()
         .then(function(mocks) {
             logger.log(mocks.length)
@@ -72,6 +75,7 @@ const create = function(m){
         var mock = {
             id: [m.service.id, m.mock.name].map((d)=>{return slugify(d)}).join('/') + m.path +'['+m.method.method +']',
             serviceId: m.service.id,
+            path: m.path,
             method: m.method.method,
             ...m.mock
         }

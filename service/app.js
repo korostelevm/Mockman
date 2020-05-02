@@ -109,8 +109,9 @@ router.delete('/service/:serviceId', async (req, res) => {
 
 // mocks
 router.get('/service/:serviceId/mocks', async (req, res) => {
-  var saved = await models.mocks.create(req.params.serviceId)
-  res.json(saved)
+  logger.log(req.query)
+  var mocks = await models.mocks.index(req.params.serviceId, req.query.path, req.query.method)
+  res.json(mocks)
 })
 router.put('/mock', async (req, res) => {
   var saved = await models.mocks.create(req.body)

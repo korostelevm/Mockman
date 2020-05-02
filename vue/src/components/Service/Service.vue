@@ -46,7 +46,7 @@
   v-if="service.spec"
   >
     <b-tabs content-class="mt-3">
-      <b-tab
+      <b-tab lazy
       v-for="(path,k) of Object.keys(service.spec.paths)" :key="k"
        :title="path" >
           <div>
@@ -204,7 +204,6 @@ export default {
         try{
           var spec = yaml.load(c)
           this.service.spec = spec
-          console.log(spec)
         }catch(e){
           if(e.name == 'YAMLException'){
             this.valid_yaml = false;
@@ -271,7 +270,6 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     this.loading = null;
-                    console.log(data)
                     this.service_saved = _.clone(data)
                     this.service = data
                     resolve(data)

@@ -1,7 +1,7 @@
 <template>
 
   <div>
-      <b-avatar class="float-left m-2 ml-3"><i style="font-size:45px;" class="fas fa-snowman"></i></b-avatar>
+      <b-avatar variant="primary" class="float-left m-2 ml-3"><i style="font-size:45px;" class="fas fa-snowman"></i></b-avatar>
     <nav class="navbar navbar-light bg-light mb-3">
       <a class="navbar-brand" href="#">
         Snowman

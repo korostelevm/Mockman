@@ -1,6 +1,6 @@
 <template>
     <div class='main row m-2'>
-    <div class='mocks_menu col-md-1'>
+    <div class='mocks_menu col-md-2'>
       <ServiceModal
         v-on:save="get_services"
       />

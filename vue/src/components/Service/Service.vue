@@ -41,8 +41,7 @@
       Invalid yaml
     </div>
   </div>
-  <hr>
-  <div class="col"
+  <div class="col-md-7"
   v-if="service.spec"
   >
     <b-tabs content-class="mt-3">

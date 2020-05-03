@@ -12,7 +12,6 @@
                     <h5>Mocks</h5>
                       
                     <p>
-                      Mocks are parameter sets for the api specs. <br>You can define request and response headers, parameters and body, 
                     </p>
                     </div>
                     <b-tabs  card  lazy>

@@ -5,12 +5,20 @@
       &nbsp; {{$api}}/server/{{mock.serviceId}}/{{encodeURIComponent(mock.name)}}{{mock.path}}{{mock.url_params}}
     </b-alert>
     <hr>
-    <div class='float-right'>
-      <b-button size="sm" 
-      variant="success"
-      >
-        Save Mock</b-button>
-    </div>
+    <div class="btn-group float-right" role="group">
+        <button class="btn btn-sm"
+          :class="{
+            'btn-success':saved,
+            'btn-warning':!saved,
+            }"
+         type="button"
+        v-on:click="update"
+        ><i class='fa fa-check'></i> Save</button>
+        <button class="btn btn-danger btn-sm" type="button"
+        v-on:click="remove"
+        ><i class='fa fa-trash'></i> Delete Mock</button>
+      </div>
+
 
     <h5>Request</h5>
     <div class="row">
@@ -27,7 +35,7 @@
             <codemirror
             :value="mock.request_headers"
             :options="cmOptions"
-            @input="function(c){mock.request_headers = c}"
+            @input="input_request_headers"
             />
         </div>
     </div>
@@ -37,7 +45,7 @@
             <codemirror
             :value="mock.request_body"
             :options="cmOptions"
-            @input="function(c){mock.request_body = c}"
+            @input="input_request_body"
             />
         </div>
     </div>
@@ -49,7 +57,7 @@
             <codemirror
             :value="mock.response_headers"
             :options="cmOptions"
-            @input="function(c){mock.response_headers = c}"
+            @input="input_response_headers"
             />
         </div>
     </div>
@@ -60,7 +68,7 @@
             <codemirror
             :value="mock.response_body"
             :options="cmOptions"
-            @input="function(c){mock.response_body = c}"
+            @input="input_response_body"
             />
         </div>
     </div>
@@ -79,6 +87,7 @@ import 'codemirror/theme/monokai.css'
 export default {
     props:['path','method','service','method',"_mock"],
     data() {
+      var mock_saved = _.clone(this._mock)
       var mock = _.clone(this._mock)
       if(this.method.parameters){
         var req_params = _.groupBy(this.method.parameters, 'name')
@@ -106,6 +115,8 @@ export default {
       }
       
       return {
+        saved:true,
+        mock_saved:mock_saved,
         mock:mock,
         loading: null,
         cmOptions: {
@@ -118,19 +129,32 @@ export default {
       }
     },
     watch:{
-      'mock.request_params':function(c){
-        console.log(c)
-      }
     },
     components:{
       codemirror
     },
     mounted: function() {
-     
     },
     created: function() {
     },
     methods: {
+      input_response_body(c){
+        if(this._mock.response_headers !== c){this.saved = false}
+        this.mock.response_body = c
+        this.validate()
+      },
+      input_response_headers(c){
+        this.mock.response_headers = c
+        this.validate()
+      },
+      input_request_body(c){
+        this.mock.request_body = c
+        this.validate()
+      },
+      input_request_headers(c){
+        this.mock.request_headers = c
+        this.validate()
+      },
       input_request_params(c){
         this.mock.request_params = c
         this.mock.query = JSON.parse(c)
@@ -138,8 +162,66 @@ export default {
           .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(this.mock.query[k]))
           .join('&')
         Vue.set(this.mock,'url_params',url_params,true)
-        console.log(url_params)
-      }
+        this.validate()
+      },
+      validate(){
+        if( this.mock.request_headers != this.mock_saved.request_headers ||
+        this.mock.request_params != this.mock_saved.request_params ||
+        this.mock.request_body != this.mock_saved.request_body ||
+        this.mock.response_headers != this.mock_saved.response_headers ||
+        this.mock.response_body != this.mock_saved.response_body){
+          this.saved = false
+        }else{
+          this.saved = true
+        }
+        
+      },
+      update(){
+        return new Promise((resolve,reject)=>{
+          this.loading = true;
+          fetch(this.$api + '/mock/'+encodeURIComponent(this.mock.id)
+                , {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': this.get_auth_header()
+                },
+                body: JSON.stringify(this.mock),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.loading=false;
+                    this.saved=true;
+                    this.mock_saved=_.clone(this.mock);
+                    this.$emit('saved', this.mock)
+                    console.log('saved mock',data)
+                    resolve(data)
+                }).catch(e => {
+                  this.error = e; console.error('exception:', e);
+                })
+          })
+        },
+      remove(){
+        return new Promise((resolve,reject)=>{
+          this.loading = true;
+          fetch(this.$api + '/mock/'+encodeURIComponent(this.mock.id)
+                , {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': this.get_auth_header()
+                },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.loading=false;
+                    this.$emit('removed')
+                    resolve(data)
+                }).catch(e => {
+                  this.error = e; console.error('exception:', e);
+                })
+          })
+        }
     }
   }
 </script>

@@ -15,8 +15,6 @@ const requireComponent = require.context(
   // Only include  .vue files
   /.+\.vue$/
 )
-// console.log(requireComponent.keys())
-// For each matching file name...
 requireComponent.keys().forEach((fileName) => {
   const componentConfig = requireComponent(fileName)
   fileName = fileName.split('/').slice(-1)[0]
@@ -27,6 +25,5 @@ requireComponent.keys().forEach((fileName) => {
         .replace(/\.\w+$/, '')
     )
   )
-  console.log('loaded component - ',componentName)
   Vue.component(componentName, componentConfig.default || componentConfig)
 })

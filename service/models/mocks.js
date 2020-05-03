@@ -24,8 +24,15 @@ var schema = new Schema({
                 throughput: 'ON_DEMAND'
             }
         }, 
+        query:Object,
+        url_params:String,
+        request_params: String,
         method:String,
         path:String,
+        request_headers: String,
+        request_body: String,
+        response_headers: String,
+        response_body: String,
     },{
         saveUnknown: true,
         useDocumentTypes: true,
@@ -37,10 +44,6 @@ var schema = new Schema({
 const Model = dynamoose.model('Mock', schema)
     
 const index = function(serviceId, path, method){
-    logger.log(serviceId)
-    logger.log(serviceId)
-    logger.log(serviceId)
-    logger.log(serviceId, path,method)
     return new Promise( async (resolve, reject)=>{
         Model.query('serviceId').eq(serviceId)
         .and().where('path').eq(path)
@@ -119,6 +122,22 @@ const create = function(m){
     })
 }
  
+const update = function(mockId, mock){
+    return new Promise( async (resolve, reject)=>{
+        Model.update({id: mockId},{
+            query: mock.query,
+            request_headers: mock.request_headers,
+            request_params: mock.request_params,
+            request_body: mock.request_body,
+            response_headers: mock.response_headers,
+            response_body: mock.response_body,
+        })
+        .then(function(services) {
+                return resolve(services)
+            })
+    })
+}
+
 const remove = function(mockId){
     return new Promise( async (resolve, reject)=>{
         Model.delete(mockId)
@@ -134,6 +153,7 @@ module.exports = {
     index,
     get,
     create,
+    update,
     remove
 }
 

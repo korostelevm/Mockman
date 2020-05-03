@@ -117,6 +117,14 @@ router.put('/mock', async (req, res) => {
   var saved = await models.mocks.create(req.body)
   res.json(saved)
 })
+router.post('/mock/:mockId', async (req, res) => {
+  var saved = await models.mocks.update(req.params.mockId, req.body)
+  res.json(saved)
+})
+router.delete('/mock/:mockId', async (req, res) => {
+  var deleted = await models.mocks.remove(req.params.mockId)
+  res.json(deleted)
+})
 
 // // routes
 

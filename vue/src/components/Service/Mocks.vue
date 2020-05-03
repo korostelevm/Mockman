@@ -25,7 +25,8 @@
                           :service="service"
                           :path="path"
                           :method="method"
-                          v-on:save="load"
+                          v-on:saved="load"
+                          v-on:removed="function(){m=null; load()}"
                         />
                       </b-tab>
                     </b-tabs>

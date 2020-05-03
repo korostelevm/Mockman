@@ -66,7 +66,6 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     this.loading = null;
-                    console.log(data)
                     this.mocks = data;
                     resolve(data)
                 }).catch(e => {

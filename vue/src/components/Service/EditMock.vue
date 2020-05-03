@@ -2,7 +2,7 @@
 <div>
     <h5>Endpoint</h5>
     <b-alert variant="success" show>
-      &nbsp; {{$api}}/server/{{mock.serviceId}}/{{encodeURIComponent(mock.name)}}{{mock.path}}{{mock.url_params}}
+      &nbsp; {{$api}}/server/{{encodeURIComponent(mock.serviceId)}}/{{encodeURIComponent(mock.name)}}{{mock.path}}{{mock.url_query}}
     </b-alert>
     <hr>
     <div class="btn-group float-right" role="group">
@@ -25,9 +25,9 @@
         <div class="col-md-6">
             Request Parameters
             <codemirror
-            :value="mock.request_params"
+            :value="mock.request_query_params"
             :options="cmOptions"
-            @input="input_request_params"
+            @input="input_request_query_params"
             />
         </div>
         <div class="col-md-6">
@@ -89,9 +89,11 @@ export default {
     data() {
       var mock_saved = _.clone(this._mock)
       var mock = _.clone(this._mock)
-      if(this.method.parameters){
-        var req_params = _.groupBy(this.method.parameters, 'name')
-        var req_params = _.mapValues(req_params,(v)=>{
+      
+      if(this.method.parameters && this.method.parameters.filter((p)=>{return p.in == 'query'}).length){
+        var query_params = this.method.parameters.filter((p)=>{return p.in == 'query'})
+        query_params = _.groupBy(this.method.parameters, 'name')
+        query_params = _.mapValues(query_params,(v)=>{
           try{
             return v[0].schema.type
           }catch(e){
@@ -99,13 +101,12 @@ export default {
           }
         })
         if(!mock.query){
-          mock.request_params = JSON.stringify(req_params,null,2)
-          mock.query = req_params
+          mock.query_params = JSON.stringify(query_params,null,2)
+          mock.query = query_params
         }
-        mock.url_params ='?'+ Object.keys(mock.query)
+        mock.url_query ='?'+ Object.keys(mock.query)
           .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(mock.query[k]))
           .join('&')
-        
       }
 
       if(!mock.request_headers){
@@ -155,18 +156,18 @@ export default {
         this.mock.request_headers = c
         this.validate()
       },
-      input_request_params(c){
-        this.mock.request_params = c
+      input_request_query_params(c){
+        this.mock.request_query_params = c
         this.mock.query = JSON.parse(c)
         var url_params = '?'+Object.keys(this.mock.query)
           .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(this.mock.query[k]))
           .join('&')
-        Vue.set(this.mock,'url_params',url_params,true)
+        Vue.set(this.mock,'url_params',url_query,true)
         this.validate()
       },
       validate(){
         if( this.mock.request_headers != this.mock_saved.request_headers ||
-        this.mock.request_params != this.mock_saved.request_params ||
+        this.mock.request_query_params != this.mock_saved.request_query_params ||
         this.mock.request_body != this.mock_saved.request_body ||
         this.mock.response_headers != this.mock_saved.response_headers ||
         this.mock.response_body != this.mock_saved.response_body){

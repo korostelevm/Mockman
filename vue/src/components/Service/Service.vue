@@ -59,20 +59,37 @@
                       <p>{{method.summary}}</p>
                     </div>
                     <div v-if="method.parameters">
-                      <h5>URL parmeters</h5>
-                      <div class='ml-3'>
-                        <p
-                        v-for="param of method.parameters" :key="param.name"
-                        ><b-badge>{{(param.schema && param.schema.type) ? param.schema.type : 'string'}}</b-badge> &nbsp;<strong>{{param.name}}</strong>
-                          &nbsp;{{param.description ? ': '+param.description : ''}}</p>
+                      <div v-if="method.parameters.filter((p)=>{return p.in =='query'}).length">
+                        <h5>Query parmeters</h5>
+                        <div class='ml-3'>
+                          <p v-for="param of method.parameters.filter((p)=>{return p.in =='query'})" :key="param.name"
+                          ><b-badge>{{(param.schema && param.schema.type) ? param.schema.type : 'string'}}</b-badge> &nbsp;<strong>{{param.name}}</strong>
+                            &nbsp;{{param.description ? ': '+param.description : ''}}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div v-if="method.requestBody && method.requestBody.content['application/json'] && method.requestBody.content['application/json'].schema">
-                      <h5>Request Body Schema &nbsp;<b-badge>{{ Object.keys(method.requestBody.content)[0] }}</b-badge> </h5>
-                      <div class='ml-3'>
-                        <h6><b-badge>{{method.requestBody.content['application/json'].schema.type}}</b-badge></h6>
-                        <div v-if="method.requestBody.content['application/json'].schema.type =='object' &&  method.requestBody.content['application/json'].schema.properties">
-                          <tree-view :data="method.requestBody.content['application/json'].schema.properties" :options="{maxDepth:1,  rootObjectKey: 'properties'}"></tree-view>
+                      <div v-if="method.parameters.filter((p)=>{return p.in =='body'}).length">
+                        <h5>Body parmeters</h5>
+                        <div class='ml-3'>
+                          <p v-for="param of method.parameters.filter((p)=>{return p.in =='body'})" :key="param.name"
+                          ><b-badge>{{(param.schema && param.schema.type) ? param.schema.type : 'string'}}</b-badge> &nbsp;<strong>{{param.name}}</strong>
+                            &nbsp;{{param.description ? ': '+param.description : ''}}</p>
+                        </div>
+                      </div>
+                      <div v-if="method.parameters.filter((p)=>{return p.in =='path'}).length">
+                        <h5>Path parmeters</h5>
+                        <div class='ml-3'>
+                          <p v-for="param of method.parameters.filter((p)=>{return p.in =='path'})" :key="param.name"
+                          ><b-badge>{{(param.schema && param.schema.type) ? param.schema.type : 'string'}}</b-badge> &nbsp;<strong>{{param.name}}</strong>
+                            &nbsp;{{param.description ? ': '+param.description : ''}}</p>
+                        </div>
+                      </div>
+                      <div v-if="method.requestBody && method.requestBody.content['application/json'] && method.requestBody.content['application/json'].schema">
+                        <h5>Request Body Schema &nbsp;<b-badge>{{ Object.keys(method.requestBody.content)[0] }}</b-badge> </h5>
+                        <div class='ml-3'>
+                          <h6><b-badge>{{method.requestBody.content['application/json'].schema.type}}</b-badge></h6>
+                          <div v-if="method.requestBody.content['application/json'].schema.type =='object' &&  method.requestBody.content['application/json'].schema.properties">
+                            <tree-view :data="method.requestBody.content['application/json'].schema.properties" :options="{maxDepth:1,  rootObjectKey: 'properties'}"></tree-view>
+                          </div>
                         </div>
                       </div>
                     </div>

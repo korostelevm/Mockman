@@ -11,6 +11,7 @@ const cors = require('cors')
 const compression = require('compression')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const app = express()
+var slugify = require('slugify')
 const router = express.Router()
 var AWSXRay = require('aws-xray-sdk');
 app.use(AWSXRay.express.openSegment('Mocker'));
@@ -28,16 +29,23 @@ router.use(awsServerlessExpressMiddleware.eventContext())
 app.use('/server', async (req, res) => {
   logger.log('sadf')
   logger.log(req.headers)
+  logger.log(req.method)
   logger.log(req.path)
-  var service = req.path.split('/')[1]
-  var path = req.path.split('/').slice(2).join('/')
-  var mock = await models.mocks.get_mock(req.path.slice(1))
-  var responseHeaders = JSON.parse(mock.responseHeaders)
-  Object.keys(responseHeaders).forEach((header)=>{
-    res.header(header,responseHeaders[header])
-  })
   
-  res.send(mock.responseBody)
+  var service = decodeURIComponent(req.path.split('/')[1])
+  var name = decodeURIComponent(req.path.split('/')[2])
+  var path = req.path.split('/').slice(3).join('/')
+  var method = '['+req.method.toLowerCase()+']'
+  
+  // var mock = await models.mocks.get_mock(req.path.slice(1))
+  // var responseHeaders = JSON.parse(mock.responseHeaders)
+  // Object.keys(responseHeaders).forEach((header)=>{
+  //   res.header(header,responseHeaders[header])
+  // })
+  var response = await models.mocks.serve({
+    
+  })
+  res.send('OK')
 })
 
 router.get('/', (req, res) => {

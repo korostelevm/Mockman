@@ -16,7 +16,7 @@ var schema = new Schema({
         },
         "serviceId": {
             type: String,
-            index: {
+            index: { 
                 global: true,
                 rangeKey:'path',
                 name: 'serviceIdIndex',
@@ -24,9 +24,18 @@ var schema = new Schema({
                 throughput: 'ON_DEMAND'
             }
         }, 
+        "contentId": {
+            type: String,
+            index: {
+                global: true,
+                name: 'contentIdIndex',
+                project: true, // ProjectionType: ALL
+                throughput: 'ON_DEMAND'
+            }
+        }, 
         query:Object,
         url_params:String,
-        request_params: String,
+        request_query_params: String,
         method:String,
         path:String,
         request_headers: String,
@@ -61,6 +70,14 @@ const query = function(m){
         return resolve(null)
     })
 }
+const serve = function(params){
+    // id: [m.service.id, m.mock.name].map((d)=>{return slugify(d)}).join('/') + m.path +'['+m.method.method +']',
+    
+    return new Promise((resolve,reject)=>{
+        resolve('OK')
+    })
+}
+
 const get = function(mockId){
     console.log(mockId)
     return new Promise( async (resolve, reject)=>{
@@ -78,8 +95,9 @@ const create = function(m){
         var mock = {
             id: [m.service.id, m.mock.name].map((d)=>{return slugify(d)}).join('/') + m.path +'['+m.method.method +']',
             serviceId: m.service.id,
+            contentId: to_content_id([m.serviceId, m.path, m.method.method, m.request_query_params, m.request_body]),
             path: m.path,
-            method: m.method.method,
+            method: m.method.method.toLowerCase(),
             ...m.mock
         }
         mock = new Model(mock)
@@ -121,13 +139,25 @@ const create = function(m){
             })
     })
 }
- 
+
+var to_content_id = function(m){
+    var id = sha1(m.map((d)=>{
+        if(typeof(d)=='object'){
+            d=JSON.stringify(d)
+        }
+        d = d.toLowerCase()
+        return d
+    }))
+    return id
+}
+
 const update = function(mockId, mock){
     return new Promise( async (resolve, reject)=>{
         Model.update({id: mockId},{
+            contentId: to_content_id([mock.serviceId, mock.path, mock.method.method, mock.request_query_params, mock.request_body]),
             query: mock.query,
             request_headers: mock.request_headers,
-            request_params: mock.request_params,
+            request_query_params: mock.request_query_params,
             request_body: mock.request_body,
             response_headers: mock.response_headers,
             response_body: mock.response_body,
@@ -136,7 +166,7 @@ const update = function(mockId, mock){
                 return resolve(services)
             })
     })
-}
+} 
 
 const remove = function(mockId){
     return new Promise( async (resolve, reject)=>{
@@ -154,6 +184,7 @@ module.exports = {
     get,
     create,
     update,
+    serve,
     remove
 }
 

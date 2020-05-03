@@ -50,7 +50,7 @@
        :title="path" >
           <div>
             <b-card no-body>
-              <b-tabs pills card >
+              <b-tabs pills card lazy >
                 <b-tab v-for="(method,m) in service.spec.paths[path]" :key="m"
                   :title="m" >
                   <b-card-text>

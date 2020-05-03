@@ -2,7 +2,7 @@
 <div>
     <h5>Endpoint</h5>
     <b-alert variant="success" show>
-      &nbsp; {{$api}}/server/{{encodeURIComponent(mock.serviceId)}}/{{encodeURIComponent(mock.name)}}{{mock.path}}{{mock.url_query}}
+      &nbsp; {{$api}}/server/{{encodeURIComponent(mock.serviceId)}}{{mock.path}}{{mock.url_query}}
     </b-alert>
     <hr>
     <div class="btn-group float-right" role="group">
@@ -22,15 +22,17 @@
 
     <h5>Request</h5>
     <div class="row">
-        <div class="col-md-6">
-            Request Parameters
+        <div class="col"
+          v-if="this.method.parameters && this.method.parameters.filter((p)=>{return p.in == 'query'}).length"
+        >
+            Query Parameters
             <codemirror
             :value="mock.request_query_params"
             :options="cmOptions"
             @input="input_request_query_params"
             />
         </div>
-        <div class="col-md-6">
+        <div class="col">
             Request Headers
             <codemirror
             :value="mock.request_headers"
@@ -101,7 +103,7 @@ export default {
           }
         })
         if(!mock.query){
-          mock.query_params = JSON.stringify(query_params,null,2)
+          mock.request_query_params = JSON.stringify(query_params,null,2)
           mock.query = query_params
         }
         mock.url_query ='?'+ Object.keys(mock.query)
@@ -114,7 +116,11 @@ export default {
           "Content-Type":"application/json"
         },null,2)
       }
-      
+      if(!mock.response_headers){
+        mock.request_headers = JSON.stringify({
+          "Content-Type":"application/json"
+        },null,2)
+      }
       return {
         saved:true,
         mock_saved:mock_saved,
@@ -153,16 +159,21 @@ export default {
         this.validate()
       },
       input_request_headers(c){
-        this.mock.request_headers = c
+        // this.mock.request_headers = c
+        Vue.set(this.mock,'request_headers',c,true)
         this.validate()
       },
       input_request_query_params(c){
         this.mock.request_query_params = c
         this.mock.query = JSON.parse(c)
-        var url_params = '?'+Object.keys(this.mock.query)
+        if(!Object.keys(this.mock.query).length){
+          Vue.set(this.mock,'url_query','',true)
+          return
+        }
+        var url_query = '?'+Object.keys(this.mock.query)
           .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(this.mock.query[k]))
           .join('&')
-        Vue.set(this.mock,'url_params',url_query,true)
+        Vue.set(this.mock,'url_query',url_query,true)
         this.validate()
       },
       validate(){

@@ -1,6 +1,7 @@
 var faker = require('faker')
 var moment = require('moment')
 var _ = require('lodash')
+var utils = require('./utils')
 const dynamoose = require('dynamoose');
 const Schema = dynamoose.Schema;
 dynamoose.AWS.config.update({
@@ -21,8 +22,12 @@ var schema = new Schema({
                 throughput: 'ON_DEMAND'
             }
         },
-        spec_yaml:String,
-        // spec:Object,
+        spec_yaml:String, 
+        // spec:{
+        //     type:Object,
+        //     // "set": (value) => {return JSON.stringify(value)} ,
+        //     // "get": (value) => {return JSON.parse(value)} 
+        // },
         description:String,
     },{ 
         saveUnknown: true,
@@ -57,8 +62,9 @@ const get = function(id){
 const update = function(service_definition){
     return new Promise( async (resolve, reject)=>{
         // var service = new Service(service_definition)
+        
         Service.update({id:service_definition.name},{
-            spec:service_definition.spec,
+            spec: utils.clean_object(service_definition.spec),
             spec_yaml:service_definition.spec_yaml,
         })
         .then(function(services) {

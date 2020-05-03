@@ -27,25 +27,22 @@ router.use(bodyParser.urlencoded({ extended: true }))
 router.use(awsServerlessExpressMiddleware.eventContext())
 
 app.use('/server', async (req, res) => {
-  logger.log('sadf')
-  logger.log(req.headers)
-  logger.log(req.method)
-  logger.log(req.path)
   
-  var service = decodeURIComponent(req.path.split('/')[1])
-  var name = decodeURIComponent(req.path.split('/')[2])
-  var path = req.path.split('/').slice(3).join('/')
-  var method = '['+req.method.toLowerCase()+']'
   
-  // var mock = await models.mocks.get_mock(req.path.slice(1))
-  // var responseHeaders = JSON.parse(mock.responseHeaders)
-  // Object.keys(responseHeaders).forEach((header)=>{
-  //   res.header(header,responseHeaders[header])
-  // })
-  var response = await models.mocks.serve({
-    
+  var mock_response = await models.mocks.serve(req)
+  if(!mock_response){
+    return res.status(404).send('No matching mock found')
+  }
+
+  logger.log(mock_response)
+  Object.keys(mock_response.response_headers).map((k)=>{
+    res.header(k,mock_response.response_headers[k])
   })
-  res.send('OK')
+  res.header('x-mock-name', mock_response.name)
+  res.header('x-mock-description', mock_response.description)
+  res.header('x-mock-created', mock_response.createdAt)
+  res.header('x-mock-updated', mock_response.updatedAt)
+  res.send(mock_response.response_body)
 })
 
 router.get('/', (req, res) => {

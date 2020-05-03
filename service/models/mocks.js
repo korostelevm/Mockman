@@ -59,7 +59,6 @@ const index = function(serviceId, path, method){
         .filter("method").eq(method)
         .exec()
         .then(function(mocks) {
-            logger.log(mocks.length)
                 return resolve(mocks)
             })
     }) 
@@ -70,11 +69,36 @@ const query = function(m){
         return resolve(null)
     })
 }
-const serve = function(params){
-    // id: [m.service.id, m.mock.name].map((d)=>{return slugify(d)}).join('/') + m.path +'['+m.method.method +']',
-    
-    return new Promise((resolve,reject)=>{
-        resolve('OK')
+const serve = function(req){
+    return new Promise( async (resolve, reject)=>{
+        var serviceId = decodeURIComponent(req.path.split('/')[1])
+        var path = '/'+req.path.split('/').slice(2).join('/')
+        var method = req.method.toLowerCase()
+        var request_body = req.body
+        
+        var id = to_content_id([serviceId, path, method, req.query, request_body])
+        logger.log(id)
+
+        return Model.query('contentId').eq(id)
+            .exec()
+            .then(function(m) {
+                logger.log(m)
+                // no mocks found
+                if(!m.length){
+                    return resolve(false)
+                }
+                
+                // the first mock .... should be better
+                var mock = m[0].originalItem()
+                try{
+                    mock.response_headers = JSON.parse(mock.response_headers)
+                }catch(e){
+                    logger.error(e)
+                    mock.response_headers = {}
+                }
+
+                return resolve(mock)
+            })
     })
 }
 
@@ -142,19 +166,32 @@ const create = function(m){
 
 var to_content_id = function(m){
     var id = sha1(m.map((d)=>{
+        if(typeof(d)=='undefined'){
+            return ''
+        }
+        if(typeof(d)=='object' && !Object.keys(d).length){
+            return ''
+        }
         if(typeof(d)=='object'){
-            d=JSON.stringify(d)
+            const ordered = {};
+            Object.keys(d).sort().forEach(function(key) {
+            ordered[key] = d[key];
+            });
+            d=slugify(JSON.stringify(ordered))
+            console.log(d)
         }
         d = d.toLowerCase()
+        console.log('id_component',d)
         return d
-    }))
+    }).join(''))
     return id
 }
 
 const update = function(mockId, mock){
     return new Promise( async (resolve, reject)=>{
+        console.log(mock)
         Model.update({id: mockId},{
-            contentId: to_content_id([mock.serviceId, mock.path, mock.method.method, mock.request_query_params, mock.request_body]),
+            contentId: to_content_id([mock.serviceId, mock.path, mock.method, mock.query, mock.request_body]),
             query: mock.query,
             request_headers: mock.request_headers,
             request_query_params: mock.request_query_params,

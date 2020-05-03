@@ -17,7 +17,7 @@
                     </div>
                     <b-tabs  card  lazy>
                       <b-tab v-for="m in mocks" :key="m.id"
-                      :title='m.name'>
+                      :title='m.name' lazy >
                         <p>{{m.description}}</p>
                           
                         <EditMock
@@ -66,6 +66,7 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     this.loading = null;
+                    console.log(data)
                     this.mocks = data;
                     resolve(data)
                 }).catch(e => {

@@ -1,6 +1,8 @@
 <template>
 <div class="mt-4">
   <div class="row">
+    <div class="col-md-5 yaml_editor">
+      <div class="row">
     <div class="col">
       <h2>{{service.name}}</h2> 
     </div> <span class = 'loading' v-if="loading && !error"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
@@ -21,14 +23,16 @@
       </div>
     </div>
   </div>
-  <div class="row">
+      <div class="row">
     <div class="col">
       {{service.description}}
     </div>
   </div>
   <hr>
-  <div class="row">
-    <div class="col-md-5 yaml_editor">
+
+
+
+      
   <h4>Api Spec</h4>
   <codemirror
       :value="service.spec_yaml"

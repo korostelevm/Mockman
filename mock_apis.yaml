@@ -1,0 +1,193 @@
+openapi: 3.0.0
+info:
+  title: App
+  description: an app
+paths:
+  /users:
+    delete:
+      summary: this is for stuff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                metadata:
+                  type: object
+                  properties:
+                    _datapoint: string
+                    _remember_id: string
+                data:
+                  type: string
+    post:
+      summary: post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                metadata:
+                  type: object
+                  properties:
+                    _datapoint: string
+                    _remember_id: string
+                data:
+                  type: string
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  openapi: 3.0.0
+info:
+  title: App
+  description: an app
+paths:                  
+  /users:
+    patch:
+      summary: the summary
+    put:
+      summary: asdfsadf sad
+    options:
+      summary: asdfsadf sadf
+    get:
+      summary: asdfsadf sadf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+    post:
+      summary: asdfsadf sadf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  
+                  
+  /route/other_stuff:
+    post:
+      summary: asdfsadf sadf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  
+  /route/stuff:
+    post:
+      summary: asdfsadf sadf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+
+
+
+
+
+
+
+
+openapi: 3.0.0
+info:
+  title: App
+  description: an app
+paths:
+  /recall: 
+    get:
+      summary: asdfsadf sadf
+      security:
+        - type: http
+          scheme: bearer
+      parameters:
+        - name: _remember_id
+          in: query
+          required: true
+          description: The Id
+          schema:
+            type : string
+        - name: another thing
+          in: query
+        - name: _datapoint
+          in: query
+          required: true
+          description: The name 
+          schema:
+            type : string
+      responses:
+        '200':
+          description: returns some data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  datapoints:
+                    type: array
+  /memorize:
+    post:
+      summary: asdfsadf sadf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                metadata:
+                  type: object
+                  properties:
+                    _datapoint: string
+                    _remember_id: string
+                data:
+                  type: string
+                  
+                  
+  
+
+
+
+
+
+
+
+
+

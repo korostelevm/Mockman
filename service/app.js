@@ -106,16 +106,26 @@ router.put('/service', async (req, res) => {
 })
  
 router.delete('/service/:serviceId', async (req, res) => {
-  var r = await models.services.remove({
-    serviceId: req.params.serviceId
-  })
+  // delete service
+  var r = await models.services.remove(req.params.serviceId)
+  // get and delete all the sercvices mocks
+  var mocks = await models.mocks.service_index(req.params.serviceId)
+  await Promise.all(mocks.map(m=>{
+    m.delete()
+  }))
   res.json(r)
 }) 
 
 // mocks
 router.get('/service/:serviceId/mocks', async (req, res) => {
   logger.log(req.query)
-  var mocks = await models.mocks.index(req.params.serviceId, req.query.path, req.query.method)
+  var mocks;
+  if(req.query){
+    mocks = await models.mocks.index(req.params.serviceId, req.query.path, req.query.method)
+  }else{
+    mocks = await models.mocks.service_index(req.params.serviceId)
+  }
+
   res.json(mocks)
 })
 router.put('/mock', async (req, res) => {

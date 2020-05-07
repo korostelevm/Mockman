@@ -54,6 +54,7 @@
 
 <script>
 import { EventBus } from '../../EventBus.js';
+const YAML = require('json-to-pretty-yaml');
 export default {
     // props: ['service'],
 
@@ -75,13 +76,30 @@ export default {
     methods: {
       save(){
         return new Promise((resolve,reject)=>{
+        var service = this.service;
+        service.spec = {
+          "openapi": "3.0.0",
+          "info": {
+            "title": service.name,
+            "description": service.description
+          },
+          "paths": {
+            "/": {
+              "get": {
+                "summary": "get root"
+              }
+            }
+          }
+        }
+        service.spec_yaml = YAML.stringify(service.spec);
+        // service.spec_yaml = 'openapi: 3.0.0\ninfo:\n  title: '+service.name+'\n  description: '+service.description+'\npaths:\n  /:\n    get:\n      summary: get root'
         fetch(this.$api + '/service', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': this.get_auth_header()
                 },
-                body: JSON.stringify(this.service),
+                body: JSON.stringify(service),
                 })
                 .then(res => res.json())
                 .then(data => {

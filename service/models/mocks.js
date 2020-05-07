@@ -52,12 +52,23 @@ var schema = new Schema({
     })
 const Model = dynamoose.model('Mock', schema)
     
+// mocks for service + route + method
 const index = function(serviceId, path, method){
     return new Promise( async (resolve, reject)=>{
         Model.query('serviceId').eq(serviceId)
         .and().where('path').eq(path)
         .filter("method").eq(method)
         .exec()
+        .then(function(mocks) {
+                return resolve(mocks)
+            })
+    }) 
+} 
+
+// mocks for just service
+const service_index = function(serviceId){
+    return new Promise( async (resolve, reject)=>{
+        Model.query('serviceId').eq(serviceId).exec()
         .then(function(mocks) {
                 return resolve(mocks)
             })
@@ -218,6 +229,7 @@ const remove = function(mockId){
 module.exports = {
     query,
     index,
+    service_index,
     get,
     create,
     update,

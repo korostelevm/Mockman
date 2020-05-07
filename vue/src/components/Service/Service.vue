@@ -4,7 +4,7 @@
     <div class="col-md-5 yaml_editor">
       <div class="row">
     <div class="col">
-      <h2>{{service.name}}</h2> 
+      <h2>{{service.spec ? service.spec.info.title : service.name}}</h2> 
     </div> <span class = 'loading' v-if="loading && !error"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
     <div class="col">
       
@@ -25,7 +25,7 @@
   </div>
       <div class="row">
     <div class="col">
-      {{service.description}}
+      {{service.spec ? service.spec.info.description : service.description}}
     </div>
   </div>
   <hr>

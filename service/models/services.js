@@ -43,6 +43,7 @@ const index = function(){
     return new Promise( async (resolve, reject)=>{
         Service.scan().exec()
         .then(function(services) {
+                services = _.sortBy(services, 'name')
                 return resolve(services)
             }) 
     }) 
@@ -52,7 +53,6 @@ const get = function(id){
     return new Promise( async (resolve, reject)=>{
         Service.get(id)
         .then(function(m) {
-            console.log(m)
                 return resolve(m)
             })
     })
@@ -85,12 +85,12 @@ const create = function(service_definition){
  
 const remove = function(id){
     return new Promise( async (resolve, reject)=>{
+        logger.log(id)
         Service.delete(id)
         .then(function(m) {
             console.log(m)
                 return resolve(m)
         })
-        return resolve({'msg':"deleted"})
     })
 }
 

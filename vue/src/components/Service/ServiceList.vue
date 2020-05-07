@@ -14,7 +14,7 @@
         </a>
       </div>
     </div>
-    <div class='col'>
+    <div class='col-md-10'>
       <Service v-if="selected_service" :serviceId="selected_service.id"
       v-on:remove="function(){selected_service=null; get_services()}"
       v-on:save="get_services"

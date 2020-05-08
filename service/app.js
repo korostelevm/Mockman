@@ -51,38 +51,6 @@ router.get('/', (req, res) => {
 
 
 
-// router.get('/mocks', async (req, res) => {
-//   var mocks = await models.mocks.get_mocks()
-//   mocks = mocks.map(m=>{
-//     m = _.mapValues(m.originalItem(), (v)=>{
-//       if(typeof(v)=='object'){return JSON.stringify(v)}
-//       return v
-//     })
-//     return m
-//   })
-//   mocks = _.groupBy(mocks,'Service')
-//   res.json(mocks)
-// })
-
-// router.get('/mock/:mockId', async (req, res) => { 
-//   var res = await models.mocks.get_mock(req.params.mockId)
-//   res.json(res)
-// })
-
-// router.put('/mock', async (req, res) => {
-//   logger.log(req.body.mockId)
-//   var saved = await models.mocks.make_mock(req.body)
-//   res.json(saved)
-// })
-
-// router.delete('/mock/:mockId', async (req, res) => {
-//   var r = await models.mocks.delete_mock({
-//     mockId: req.params.mockId
-//   })
-//   res.json(r)
-// })
-
-
 // servuces
 
 router.get('/services', async (req, res) => {
@@ -140,60 +108,6 @@ router.delete('/mock/:mockId', async (req, res) => {
   var deleted = await models.mocks.remove(req.params.mockId)
   res.json(deleted)
 })
-
-// // routes
-
-// router.get('/service/:serviceId/routes', async (req, res) => { 
-//   var s = await models.routes.index(req.params.serviceId)
-//   res.json(s)
-// })
-
-// router.get('/service/:serviceId/routes/:routeId', async (req, res) => { 
-//   var s = await models.routes.get(req.params.routeId)
-//   res.json(s)
-// })
-
-// router.put('/service/:serviceId/routes', async (req, res) => {
-//   var route = req.body
-//   route.serviceId = req.params.serviceId
-//   var saved = await models.routes.create(route)
-//   res.json(saved)
-// })
-
-// router.delete('/service/:serviceId/routes/:routeId', async (req, res) => {
-//   var r = await models.routes.remove(req.params.routeId)
-//   res.json(r)
-// })
-
-
-// // mocks
-
-// router.get('/service/:serviceId/routes/:routeId/mocks', async (req, res) => { 
-//   var s = await models.mocks.index(req.params.serviceId, req.params.routeId)
-//   res.json(s)
-// })
-
-// router.get('/service/:serviceId/routes/:routeId/mocks/:mockId', async (req, res) => { 
-//   var s = await models.mocks.get(req.params.mockId)
-//   res.json(s)
-// })
-
-// router.put('/service/:serviceId/routes/:routeId/mocks', async (req, res) => {
-//   var mock = req.body
-//   mock = await models.mocks.create({
-//     serviceId:req.params.serviceId,
-//     routeId:req.params.routeId,
-//     mock
-//   })
-//   res.json(mock)
-// })
-
-// router.delete('/service/:serviceId/routes/:routeId/mocks/:mockId', async (req, res) => {
-//   logger.log('delete',req.params.mockId)
-//   var r = await models.mocks.remove(req.params.mockId)
-//   res.json(r)
-// })
-
 
 
 

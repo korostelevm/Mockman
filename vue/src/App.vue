@@ -26,7 +26,6 @@ export default {
         error: false,
         loading: false,
         service: null
-        // backend_data:null
       }
     },
     mounted: function() {
@@ -35,26 +34,6 @@ export default {
     created: function() {
     },
     methods: {
-      //  stub: function(d) {
-      //   return new Promise((resolve,reject)=>{
-      //     fetch(this.$api + '/users', {
-      //         method: 'POST',
-      //         headers: {
-      //           'Content-Type': 'application/json',
-      //           'Authorization': this.get_auth_header()
-      //         },
-      //         body: JSON.stringify(d),
-      //       })
-      //       .then(res => res.json())
-      //       .then(data => {
-      //         console.log(data)
-      //         this.backend_data=data
-      //         resolve(data)
-      //       }).catch(e => {
-      //         this.error = e; console.error('exception:', e);
-      //       })
-      //     })
-      // },
       },
   }
 </script>

@@ -161,3 +161,4 @@ Snowflake.json
 .env.json
 ExpressLambda.json
 template-api-built.yaml
+cassandra.json

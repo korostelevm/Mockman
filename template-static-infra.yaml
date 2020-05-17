@@ -81,7 +81,8 @@ Resources:
   #       SSESpecification:
   #         SSEEnabled: True
   #       TableName: !Join [ '', [ 'Service'] ]
-
+  
+  
   APIDomainName:
     Type: 'AWS::ApiGateway::DomainName'
     Properties:

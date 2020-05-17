@@ -8,6 +8,7 @@
     "aws-serverless-express": "^3.3.3",
     "aws-xray-sdk": "^2.5.0",
     "body-parser": "^1.17.1",
+    "cassandra-driver": "^4.5.2",
     "compression": "^1.6.2",
     "cors": "^2.8.3",
     "dynamoose": "^1.11.1",
